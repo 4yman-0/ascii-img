@@ -1,0 +1,11 @@
+[package]
+name = "ascii-img-cli"
+version = "0.1.0"
+edition = "2024"
+description = "Command-line tool for using ascii-img"
+license = "MPL-2.0"
+authors = ["4yman-0"]
+
+[dependencies]
+ascii-img = { version = "0.1.0", path = "../ascii-img" }
+clap = { version = "4.5.31", features = ["derive"] }

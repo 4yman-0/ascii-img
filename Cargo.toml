@@ -1,0 +1,3 @@
+[workspace]
+members = ["ascii-img", "ascii-img-cli"]
+resolver = "3"

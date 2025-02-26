@@ -1,0 +1,28 @@
+[package]
+name = "ascii-img"
+version = "0.1.0"
+edition = "2024"
+description = "ASCII art library"
+license = "MPL-2.0"
+authors = ["4yman-0"]
+
+[dependencies]
+image = { version = "0.25.5", default-features = false }
+
+[features]
+default = [
+	"image/png",
+	"image/jpeg",
+	"image/webp",
+	"image/bmp",
+	"image/gif",
+]
+avif = ["image/avif-native"]
+bmp = ["image/bmp"]
+gif = ["image/gif"]
+hdr = ["image/hdr"]
+ico = ["image/ico"]
+jpeg = ["image/jpeg"]
+png = ["image/png"]
+tiff = ["image/tiff"]
+webp = ["image/webp"]
