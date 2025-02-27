@@ -4,13 +4,13 @@ use clap::Parser;
 #[derive(Parser)]
 #[command(author, version, about)]
 pub struct Cli {
-    image_path: String,
+    pub image_path: String,
 
     #[arg(long)]
-    width: Option<u32>,
+    pub width: Option<u32>,
 
     #[arg(long)]
-    height: Option<u32>,
+    pub height: Option<u32>,
 }
 
 #[cfg(test)]
