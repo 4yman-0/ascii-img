@@ -1,20 +1,28 @@
 mod cli;
 
-use ascii_img::{ascii_renderer::AsciiRenderer, renderer::RendererTrait};
+use ascii_img::Renderer;
 use clap::Parser;
 use cli::Cli;
+use image::ImageError;
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
+fn main() {
     let cli = Cli::parse();
-    let image = match image::open(cli.image_path) {
-        Ok(image) => image,
-        Err(error) => {
-            eprintln!("{}", error);
-            std::process::exit(1);
-        }
-    };
-    let renderer = AsciiRenderer::new().width(cli.width).height(cli.height);
-    let art = renderer.render(&image);
+    let art = render(cli).expect("Error while rendering");
     print!("{}", art);
-    Ok(())
+}
+
+fn render(cli: Cli) -> Result<String, ImageError> {
+    let image = image::open(cli.image_path)?;
+    let renderer = Renderer::default()
+    	.width(cli.width)
+    	.height(cli.height)
+    	.invert(cli.invert.unwrap_or(false));
+    //if let Some(characters) = cli.characters {
+    //	renderer.characters(characters.chars().collect())
+    //}
+    //if let Some(renderer_type) = cli.renderer_type {
+     //	renderer.characters(RendererType::from(renderer_type))
+    //}
+
+    Ok(renderer.render(&image))
 }

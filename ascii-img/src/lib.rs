@@ -1,2 +1,2 @@
-pub mod ascii_renderer;
 pub mod renderer;
+pub use renderer::{Renderer, RendererType};
