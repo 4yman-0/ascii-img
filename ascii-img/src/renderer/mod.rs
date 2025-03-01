@@ -97,6 +97,11 @@ impl Renderer {
 	    characters: Option<Vec<char>>,
 	    renderer_type: RendererType
 	) -> Self {
+		if let Some(chars) = &characters {
+			if chars.is_empty() {
+				panic!("No characters to render with: Please use `None`");
+			}
+		}
 		Self {
 			width,
 			height,
@@ -108,11 +113,4 @@ impl Renderer {
 			renderer_type,
 		}
 	}
-}
-
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    // TODO: tests
 }

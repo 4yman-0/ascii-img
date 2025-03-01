@@ -52,10 +52,10 @@ mod test {
     fn cli() {
         let cli = Cli::parse_from(vec!["path/to/bin", "path/to/image"]);
         assert_eq!(cli.image_path, "path/to/image".to_string());
-        assert_eq!(cli.width, None);
-		assert_eq!(cli.height, None);
-        assert_eq!(cli.invert, None);
-        assert_eq!(cli.characters, None);
-        assert_eq!(cli.renderer_type, None);
+        assert!(!cli.width.is_some());
+		assert!(!cli.height.is_some());
+        assert!(!cli.invert.is_some());
+        assert!(!cli.characters.is_some());
+        assert!(!cli.renderer_type.is_some());
     }
 }
