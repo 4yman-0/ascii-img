@@ -2,7 +2,7 @@
 name = "ascii-img"
 version = "0.1.0"
 edition = "2024"
-description = "ASCII art library"
+description = "Convert images to ASCII"
 license = "MPL-2.0"
 authors = ["4yman-0"]
 
@@ -11,6 +11,7 @@ default = ["ascii-renderer", "ansi-renderer", "unicode-renderer"]
 ascii-renderer = []
 ansi-renderer = ["dep:ansi_term"]
 unicode-renderer = []
+parallel = ["image/rayon"]
 
 [dependencies]
 ansi_term = { version = "0.12.1", optional = true }

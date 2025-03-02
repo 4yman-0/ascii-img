@@ -13,14 +13,13 @@ fn main() {
 
 fn render(cli: Cli) -> Result<String, ImageError> {
     let image = image::open(cli.image_path)?;
-    let characters = cli.characters.map(|chars | chars.chars().collect());
-    let renderer = Renderer::new(
-    	cli.width,
-    	cli.height,
-    	cli.invert.unwrap_or(false),
-    	characters,
-    	cli.renderer_type.unwrap_or_default().into()
-    );
+    let characters = cli.characters.map(|chars| chars.chars().collect());
+    let renderer = Renderer::default()
+        .width(cli.width)
+        .height(cli.height)
+        .invert(cli.invert.unwrap_or(false))
+        .characters(characters)
+        .renderer_type(cli.renderer_type.unwrap_or_default().into());
 
     Ok(renderer.render(&image))
 }

@@ -25,6 +25,6 @@ tiff = ["image/tiff"]
 webp = ["image/webp"]
 
 [dependencies]
-ascii-img = { version = "*", path = "../ascii-img" }
+ascii-img = { version = "*", path = "../ascii-img", features = ["parallel"] }
 clap = { version = "4.5.31", features = ["derive"] }
 image = { version = "0.25.5", default-features = false }
