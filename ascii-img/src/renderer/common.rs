@@ -36,35 +36,36 @@ pub fn process_options(options: &Renderer, image: &DynamicImage) -> DynamicImage
 }
 
 /// Creates an empty string to store results for renderers
-pub fn string_from_image_dimensions(width: u32, height: u32) -> String {
-	String::with_capacity((width * height) as usize)
+pub fn string_from_size(width: u32, height: u32) -> String {
+    String::with_capacity((width * height) as usize)
 }
 
 #[cfg(test)]
 mod test {
- 	use super::*;
+    use super::*;
 
- 	#[test]
- 	fn resize_test() {
- 		let image = DynamicImage::new_luma8(100, 100);
+    #[test]
+    fn resize_test() {
+        let image = DynamicImage::new_luma8(100, 100);
 
- 		let resized_image = resize(
- 			&Renderer::default()
- 				.width(Some(150))
- 				.height(Some(150)),
- 			&image
- 		);
+        let resized_image = resize(
+            &Renderer::default().width(Some(150)).height(Some(150)),
+            &image,
+        );
 
- 		assert_eq!(resized_image.width(), 150);
- 		assert_eq!(resized_image.height(), 150);
- 	}
- 	
- 	#[test]
- 	fn process_options_test() {
- 		let image = DynamicImage::new_luma8(100, 100);
- 		process_options(
- 			&Renderer::default(),
- 			&image
- 		);
- 	}
+        assert_eq!(resized_image.width(), 150);
+        assert_eq!(resized_image.height(), 150);
+    }
+
+    #[test]
+    fn process_options_test() {
+        let image = DynamicImage::new_luma8(100, 100);
+        process_options(&Renderer::default(), &image);
+    }
+
+    #[test]
+    fn string_from_size_test() {
+    	let string = string_from_size(20, 20);
+    	assert_eq!(string.capacity(), 400);
+    }
 }

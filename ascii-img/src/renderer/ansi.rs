@@ -23,12 +23,12 @@ fn normalize_luminance(pixel: &Rgb<u8>) -> Rgb<u8> {
 pub fn render(options: &Renderer, image: &DynamicImage) -> String {
     let image = process_options(options, image).to_rgb8();
 
-    let mut string = string_from_image_dimensions(image.width(), image.height());
+    let mut string = string_from_size(image.width(), image.height());
     let coeff = u8::MAX as f32 / (options.characters.len() - 1) as f32;
     let mut last_pixel: Option<Rgb<u8>> = None;
 
-    for (_, line) in image.enumerate_rows() {
-        for (_, _, pixel) in line {
+    for line in image.rows() {
+        for pixel in line {
             if last_pixel != Some(*pixel) {
                 let normalized_pixel = normalize_luminance(pixel);
                 string.push_str(
