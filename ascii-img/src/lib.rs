@@ -1,4 +1,9 @@
 //! Convert images to ASCII
 
 pub mod renderer;
-pub use renderer::{Renderer, RendererType};
+pub use renderer::{
+	RendererCharactersType,
+	RendererCharacters,
+	Renderer,
+	RendererType,
+};

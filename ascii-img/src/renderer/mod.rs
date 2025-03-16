@@ -11,9 +11,6 @@
 #[cfg(feature = "ansi-renderer")]
 mod ansi;
 
-#[cfg(feature = "ascii-renderer")]
-mod ascii;
-
 #[cfg(feature = "unicode-renderer")]
 mod unicode;
 
@@ -24,21 +21,55 @@ const ASCII_CHARS: &[char] = &[' ', '.', '-', ':', '=', '*', '+', '#', '%', '@']
 const ANSI_CHARS: &[char] = &[' ', '.', '-', ':', '=', '*', '+', '#', '%', '@'];
 const UNICODE_CHARS: &[char] = &[' ', '.', '-', ':', '=', '*', '+', '#', '%', '@'];
 
-fn get_characters_for_renderer(renderer_type: &RendererType) -> Vec<char> {
-    Vec::from(match renderer_type {
-        #[cfg(feature = "ascii-renderer")]
-        RendererType::Ascii => ASCII_CHARS,
-        #[cfg(feature = "ansi-renderer")]
-        RendererType::Ansi => ANSI_CHARS,
-        #[cfg(feature = "unicode-renderer")]
-        RendererType::Unicode => UNICODE_CHARS,
-    })
+#[derive(Default, Clone)]
+pub enum RendererCharactersType {
+	#[default]
+	Ascii,
+	Ansi,
+	Unicode,
 }
 
-pub enum RendererType {
-    #[cfg(feature = "ascii-renderer")]
-    Ascii,
+pub enum RendererCharacters {
+	Builtin(RendererCharactersType),
+	Custom(Vec<char>),
+}
 
+impl Default for RendererCharacters {
+	fn default() -> Self {
+		Self::Builtin(RendererCharactersType::default())
+	}
+}
+
+#[allow(dead_code)]
+impl RendererCharacters {
+	pub fn from_type(chars_type: RendererCharactersType) -> Self {
+		Self::Builtin(chars_type)
+	}
+
+	pub fn from_string(string: &str) -> Self {
+		Self::Custom(string.chars().collect())
+	}
+
+	/// Creates a new `Vec<char>` from contained data.
+	pub fn get(&self) -> Vec<char> {
+		match self {
+			Self::Builtin(chars_type) => {
+				Vec::from(match chars_type {
+					#[cfg(feature = "ascii-renderer")]
+					RendererCharactersType::Ascii => ASCII_CHARS,
+					#[cfg(feature = "ansi-renderer")]
+					RendererCharactersType::Ansi => ANSI_CHARS,
+					#[cfg(feature = "unicode-renderer")]
+					RendererCharactersType::Unicode => UNICODE_CHARS,
+				})
+			},
+			Self::Custom(characters) => characters.clone(),
+		}
+	}
+}
+
+#[derive(Clone)]
+pub enum RendererType {
     #[cfg(feature = "ansi-renderer")]
     Ansi,
 
@@ -50,7 +81,7 @@ pub struct Renderer {
     width: Option<u32>,
     height: Option<u32>,
     invert: bool,
-    pub characters: Vec<char>,
+    characters: RendererCharacters,
     renderer_type: RendererType,
 }
 
@@ -60,8 +91,8 @@ impl Default for Renderer {
             width: None,
             height: None,
             invert: false,
-            characters: get_characters_for_renderer(&RendererType::Ascii),
-            renderer_type: RendererType::Ascii,
+            characters: RendererCharacters::from_type(RendererCharactersType::Ascii),
+            renderer_type: RendererType::Unicode,
         }
     }
 }
@@ -71,9 +102,6 @@ impl Renderer {
     /// Renders an image into a string
     pub fn render(&self, image: &DynamicImage) -> String {
         match self.renderer_type {
-            #[cfg(feature = "ascii-renderer")]
-            RendererType::Ascii => ascii::render(self, image),
-
             #[cfg(feature = "ansi-renderer")]
             RendererType::Ansi => ansi::render(self, image),
 
@@ -97,8 +125,8 @@ impl Renderer {
         self
     }
 
-    pub fn characters(mut self, characters: Option<Vec<char>>) -> Self {
-        self.characters = characters.unwrap_or(get_characters_for_renderer(&self.renderer_type));
+    pub fn characters(mut self, characters: RendererCharacters) -> Self {
+        self.characters = characters;
         self
     }
 
@@ -118,7 +146,7 @@ mod test {
             .width(Some(100))
             .height(Some(100))
             .invert(true)
-            .characters(Some(vec!['#', 'w', ' ']))
-            .renderer_type(RendererType::Ascii);
+            .characters(RendererCharacters::default())
+            .renderer_type(RendererType::Unicode);
     }
 }

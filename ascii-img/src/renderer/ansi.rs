@@ -24,7 +24,8 @@ pub fn render(options: &Renderer, image: &DynamicImage) -> String {
     let image = process_options(options, image).to_rgb8();
 
     let mut string = string_from_size(image.width(), image.height());
-    let coeff = u8::MAX as f32 / (options.characters.len() - 1) as f32;
+	let characters = options.characters.get();
+    let coeff = u8::MAX as f32 / (characters.len() - 1) as f32;
     let mut last_pixel: Option<Rgb<u8>> = None;
 
     for line in image.rows() {
@@ -42,7 +43,7 @@ pub fn render(options: &Renderer, image: &DynamicImage) -> String {
                 )
             }
             let luminance = (*pixel).to_luma()[0];
-            let character = options.characters[(luminance as f32 / coeff) as usize];
+            let character = characters[(luminance as f32 / coeff) as usize];
             string.push(character);
 
             last_pixel = Some(*pixel);

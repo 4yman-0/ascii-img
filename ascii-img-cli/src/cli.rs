@@ -3,19 +3,16 @@ use clap::Parser;
 
 #[derive(clap::ValueEnum, Clone, Default)]
 pub enum RendererTypeArg {
-    /// ASCII renderer
-    #[default]
-    Ascii,
     /// ANSI renderer
     Ansi,
     /// Unicode renderer
+    #[default]
     Unicode,
 }
 
 impl From<RendererTypeArg> for RendererType {
     fn from(renderer_type: RendererTypeArg) -> Self {
         match renderer_type {
-            RendererTypeArg::Ascii => Self::Ascii,
             RendererTypeArg::Ansi => Self::Ansi,
             RendererTypeArg::Unicode => Self::Unicode,
         }
@@ -49,7 +46,7 @@ mod test {
     use super::*;
 
     #[test]
-    fn cli() {
+    fn cli_test() {
         let cli = Cli::parse_from(vec!["path/to/bin", "path/to/image"]);
         assert_eq!(cli.image_path, "path/to/image".to_string());
         assert!(!cli.width.is_some());
