@@ -23,49 +23,47 @@ const UNICODE_CHARS: &[char] = &[' ', '.', '-', ':', '=', '*', '+', '#', '%', '@
 
 #[derive(Default, Clone)]
 pub enum RendererCharactersType {
-	#[default]
-	Ascii,
-	Ansi,
-	Unicode,
+    #[default]
+    Ascii,
+    Ansi,
+    Unicode,
 }
 
 pub enum RendererCharacters {
-	Builtin(RendererCharactersType),
-	Custom(Vec<char>),
+    Builtin(RendererCharactersType),
+    Custom(Vec<char>),
 }
 
 impl Default for RendererCharacters {
-	fn default() -> Self {
-		Self::Builtin(RendererCharactersType::default())
-	}
+    fn default() -> Self {
+        Self::Builtin(RendererCharactersType::default())
+    }
 }
 
 #[allow(dead_code)]
 impl RendererCharacters {
-	pub fn from_type(chars_type: RendererCharactersType) -> Self {
-		Self::Builtin(chars_type)
-	}
+    pub fn from_type(chars_type: RendererCharactersType) -> Self {
+        Self::Builtin(chars_type)
+    }
 
-	pub fn from_string(string: &str) -> Self {
-		Self::Custom(string.chars().collect())
-	}
+    pub fn from_string(string: &str) -> Self {
+        Self::Custom(string.chars().collect())
+    }
 
-	/// Creates a new `Vec<char>` from contained data.
-	pub fn get(&self) -> Vec<char> {
-		match self {
-			Self::Builtin(chars_type) => {
-				Vec::from(match chars_type {
-					#[cfg(feature = "ascii-renderer")]
-					RendererCharactersType::Ascii => ASCII_CHARS,
-					#[cfg(feature = "ansi-renderer")]
-					RendererCharactersType::Ansi => ANSI_CHARS,
-					#[cfg(feature = "unicode-renderer")]
-					RendererCharactersType::Unicode => UNICODE_CHARS,
-				})
-			},
-			Self::Custom(characters) => characters.clone(),
-		}
-	}
+    /// Creates a new `Vec<char>` from contained data.
+    pub fn get(&self) -> Vec<char> {
+        match self {
+            Self::Builtin(chars_type) => Vec::from(match chars_type {
+                #[cfg(feature = "ascii-renderer")]
+                RendererCharactersType::Ascii => ASCII_CHARS,
+                #[cfg(feature = "ansi-renderer")]
+                RendererCharactersType::Ansi => ANSI_CHARS,
+                #[cfg(feature = "unicode-renderer")]
+                RendererCharactersType::Unicode => UNICODE_CHARS,
+            }),
+            Self::Custom(characters) => characters.clone(),
+        }
+    }
 }
 
 #[derive(Clone)]

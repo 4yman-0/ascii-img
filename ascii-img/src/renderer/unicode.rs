@@ -8,7 +8,7 @@ pub fn render(options: &Renderer, image: &DynamicImage) -> String {
     let image = process_options(options, image).to_luma8();
 
     let mut string = string_from_size(image.width(), image.height());
-	let characters = options.characters.get();
+    let characters = options.characters.get();
     let coeff = u8::MAX as f32 / (characters.len() - 1) as f32;
     for line in image.rows() {
         for pixel in line {

@@ -65,7 +65,7 @@ mod test {
 
     #[test]
     fn string_from_size_test() {
-    	let string = string_from_size(20, 20);
-    	assert_eq!(string.capacity(), 400);
+        let string = string_from_size(20, 20);
+        assert_eq!(string.capacity(), 400);
     }
 }
