@@ -15,6 +15,7 @@ mod ansi;
 mod unicode;
 
 mod common;
+use alloc::{string::String, vec::Vec};
 use image::DynamicImage;
 
 const ASCII_CHARS: &[char] = &[' ', '.', '-', ':', '=', '*', '+', '#', '%', '@'];

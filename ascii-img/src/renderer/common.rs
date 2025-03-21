@@ -2,6 +2,7 @@
 //! Contains function for use in other renderers
 
 use crate::Renderer;
+use alloc::string::String;
 use image::DynamicImage;
 
 /// Font aspect ratio

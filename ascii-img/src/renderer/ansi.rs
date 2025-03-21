@@ -1,11 +1,12 @@
 //! ASCII renderer module
 #[allow(dead_code)]
 use super::{Renderer, common::*};
+use alloc::string::{String, ToString};
 use ansi_term::Colour;
+use core::cmp::max;
 use image::{DynamicImage, Pixel, Rgb};
 
 fn normalize_luminance(pixel: &Rgb<u8>) -> Rgb<u8> {
-    use std::cmp::max;
     let (r, g, b) = (pixel[0], pixel[1], pixel[2]);
     let max_channel = max(max(r, g), b);
     if max_channel == 0 {

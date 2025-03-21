@@ -1,6 +1,7 @@
 //! ASCII renderer module
 #[allow(dead_code)]
 use super::{Renderer, common::*};
+use alloc::string::String;
 use image::DynamicImage;
 
 /// Renders the image as Unicode art
