@@ -5,6 +5,9 @@ edition = "2024"
 description = "Command-line tool for using ascii-img"
 license = "MPL-2.0"
 authors = ["4yman-0"]
+documentation = "https://docs.rs/ascii-img-cli"
+homepage = "https://crates.io/crates/ascii-img-cli"
+repository = "https://github.com/4yman-0/ascii-img"
 
 [features]
 default = [
