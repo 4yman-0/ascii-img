@@ -1,3 +1,5 @@
+use std::path::PathBuf;
+
 use ascii_img::renderer::RendererType;
 use clap::Parser;
 
@@ -23,7 +25,7 @@ impl From<RendererTypeArg> for RendererType {
 #[derive(Parser)]
 #[command(author, version, about)]
 pub struct Cli {
-    pub image_path: String,
+    pub image_path: PathBuf,
 
     #[arg(long)]
     pub width: Option<u32>,
@@ -48,7 +50,7 @@ mod test {
     #[test]
     fn cli_test() {
         let cli = Cli::parse_from(vec!["path/to/bin", "path/to/image"]);
-        assert_eq!(cli.image_path, "path/to/image".to_string());
+        assert_eq!(cli.image_path, PathBuf::from("path/to/image"));
         assert!(!cli.width.is_some());
         assert!(!cli.height.is_some());
         assert!(!cli.invert.is_some());

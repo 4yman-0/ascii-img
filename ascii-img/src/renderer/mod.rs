@@ -54,11 +54,8 @@ impl RendererCharacters {
     pub fn get(&self) -> Vec<char> {
         match self {
             Self::Builtin(chars_type) => Vec::from(match chars_type {
-                #[cfg(feature = "ascii-renderer")]
                 RendererCharactersType::Ascii => ASCII_CHARS,
-                #[cfg(feature = "ansi-renderer")]
                 RendererCharactersType::Ansi => ANSI_CHARS,
-                #[cfg(feature = "unicode-renderer")]
                 RendererCharactersType::Unicode => UNICODE_CHARS,
             }),
             Self::Custom(characters) => characters.clone(),

@@ -43,7 +43,7 @@ pub fn render(options: &Renderer, image: &DynamicImage) -> String {
                 )
             }
             let luminance = (*pixel).to_luma()[0];
-            let character = characters[(luminance as f32 / coeff) as usize];
+            let character = characters[(luminance as f32 / coeff).round() as usize];
             string.push(character);
 
             last_pixel = Some(*pixel);

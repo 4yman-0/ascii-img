@@ -7,8 +7,7 @@ license = "MPL-2.0"
 authors = ["4yman-0"]
 
 [features]
-default = ["ascii-renderer", "ansi-renderer", "unicode-renderer"]
-ascii-renderer = []
+default = ["ansi-renderer", "unicode-renderer"]
 ansi-renderer = ["dep:ansi_term"]
 unicode-renderer = []
 parallel = ["image/rayon"]

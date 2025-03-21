@@ -27,7 +27,6 @@ fn render(cli: Cli) -> Result<String, ImageError> {
         } else {
             RendererCharacters::default()
         }
-        //.map(|chars| chars.chars().collect())
     };
     let renderer = Renderer::default()
         .width(cli.width)
