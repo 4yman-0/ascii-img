@@ -1,10 +1,13 @@
 [package]
 name = "ascii-img-cli"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 description = "Command-line tool for using ascii-img"
 license = "MPL-2.0"
 authors = ["4yman-0"]
+documentation = "https://docs.rs/ascii-img-cli"
+homepage = "https://crates.io/crates/ascii-img-cli"
+repository = "https://github.com/4yman-0/ascii-img"
 
 [features]
 default = [
@@ -25,6 +28,6 @@ tiff = ["image/tiff"]
 webp = ["image/webp"]
 
 [dependencies]
-ascii-img = { version = "*", path = "../ascii-img", features = ["parallel"] }
+ascii-img = { version = "0.1.1", path = "../ascii-img", features = ["parallel"] }
 clap = { version = "4.5.31", features = ["derive"] }
 image = { version = "0.25.5", default-features = false }

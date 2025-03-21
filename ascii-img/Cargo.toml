@@ -1,10 +1,13 @@
 [package]
 name = "ascii-img"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 description = "Convert images to ASCII"
 license = "MPL-2.0"
 authors = ["4yman-0"]
+documentation = "https://docs.rs/ascii-img"
+homepage = "https://crates.io/crates/ascii-img"
+repository = "https://github.com/4yman-0/ascii-img"
 
 [features]
 default = ["ansi-renderer", "unicode-renderer"]
