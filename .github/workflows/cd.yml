@@ -23,6 +23,7 @@ jobs:
          CRATES_IO_API_TOKEN: ${{ secrets.CRATES_IO_API_TOKEN }}
 
       - name: cargo release publish
+        continue-on-error: true
         run: |-
           for crate in ascii-img ascii-img-cli; do
             cargo publish --no-verify -p $crate
