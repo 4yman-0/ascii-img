@@ -15,7 +15,7 @@ body:
     attributes:
       label: Affected Version
       description: Which version(s) this issue impact?
-    placeholder: 0.1.X
+      placeholder: 0.1.X
     validations:
       required: true
 
