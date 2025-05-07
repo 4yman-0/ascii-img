@@ -7,6 +7,10 @@ use clap::Parser;
 pub enum RendererTypeArg {
     /// ANSI renderer
     Ansi,
+
+    /// ANSI 256 colors renderer
+    Ansi256,
+
     /// Unicode renderer
     #[default]
     Unicode,
@@ -16,6 +20,7 @@ impl From<RendererTypeArg> for RendererType {
     fn from(renderer_type: RendererTypeArg) -> Self {
         match renderer_type {
             RendererTypeArg::Ansi => Self::Ansi,
+            RendererTypeArg::Ansi256 => Self::Ansi256,
             RendererTypeArg::Unicode => Self::Unicode,
         }
     }

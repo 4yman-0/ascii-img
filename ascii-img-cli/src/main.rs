@@ -1,6 +1,6 @@
 mod cli;
 
-use ascii_img::{Renderer, RendererCharacters, RendererCharactersType};
+use ascii_img::{Renderer, RendererCharacters};
 use clap::Parser;
 use cli::Cli;
 use image::ImageError;
@@ -15,12 +15,8 @@ fn render(cli: Cli) -> Result<String, ImageError> {
     let image = image::open(cli.image_path)?;
     let characters = {
         if let Some(characters) = cli.characters {
-            if characters == "ascii" {
-                RendererCharacters::from_type(RendererCharactersType::Ascii)
-            } else if characters == "ansi" {
-                RendererCharacters::from_type(RendererCharactersType::Ansi)
-            } else if characters == "unicode" {
-                RendererCharacters::from_type(RendererCharactersType::Unicode)
+            if characters == "builtin" {
+                RendererCharacters::builtin()
             } else {
                 RendererCharacters::from_string(characters.as_str())
             }

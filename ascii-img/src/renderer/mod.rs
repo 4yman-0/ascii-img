@@ -11,6 +11,9 @@
 #[cfg(feature = "ansi-renderer")]
 mod ansi;
 
+#[cfg(feature = "ansi256-renderer")]
+mod ansi256;
+
 #[cfg(feature = "unicode-renderer")]
 mod unicode;
 
@@ -18,48 +21,35 @@ mod common;
 use alloc::{string::String, vec::Vec};
 use image::DynamicImage;
 
-const ASCII_CHARS: &[char] = &[' ', '.', '-', ':', '=', '*', '+', '#', '%', '@'];
-const ANSI_CHARS: &[char] = &[' ', '.', '-', ':', '=', '*', '+', '#', '%', '@'];
-const UNICODE_CHARS: &[char] = &[' ', '.', '-', ':', '=', '*', '+', '#', '%', '@'];
-
-#[derive(Default, Clone)]
-pub enum RendererCharactersType {
-    #[default]
-    Ascii,
-    Ansi,
-    Unicode,
-}
+const DEFAULT_CHARS: &[char] = &[' ', '.', '-', ':', '=', '*', '+', '#', '%', '@'];
+// TODO: better characters for ANSI and Unicode
 
 pub enum RendererCharacters {
-    Builtin(RendererCharactersType),
-    Custom(Vec<char>),
+    Builtin,
+    String(Vec<char>),
 }
 
 impl Default for RendererCharacters {
-    fn default() -> Self {
-        Self::Builtin(RendererCharactersType::default())
-    }
+	fn default() -> Self {
+		Self::Builtin
+	}
 }
 
 #[allow(dead_code)]
 impl RendererCharacters {
-    pub fn from_type(chars_type: RendererCharactersType) -> Self {
-        Self::Builtin(chars_type)
+    pub fn builtin() -> Self {
+        Self::Builtin
     }
 
     pub fn from_string(string: &str) -> Self {
-        Self::Custom(string.chars().collect())
+        Self::String(string.chars().collect())
     }
 
     /// Creates a new `Vec<char>` from contained data.
     pub fn get(&self) -> Vec<char> {
         match self {
-            Self::Builtin(chars_type) => Vec::from(match chars_type {
-                RendererCharactersType::Ascii => ASCII_CHARS,
-                RendererCharactersType::Ansi => ANSI_CHARS,
-                RendererCharactersType::Unicode => UNICODE_CHARS,
-            }),
-            Self::Custom(characters) => characters.clone(),
+            Self::Builtin => Vec::from(DEFAULT_CHARS),
+            Self::String(characters) => characters.clone(),
         }
     }
 }
@@ -68,6 +58,9 @@ impl RendererCharacters {
 pub enum RendererType {
     #[cfg(feature = "ansi-renderer")]
     Ansi,
+
+	#[cfg(feature = "ansi256-renderer")]
+	Ansi256,
 
     #[cfg(feature = "unicode-renderer")]
     Unicode,
@@ -87,7 +80,7 @@ impl Default for Renderer {
             width: None,
             height: None,
             invert: false,
-            characters: RendererCharacters::from_type(RendererCharactersType::Ascii),
+            characters: RendererCharacters::builtin(),
             renderer_type: RendererType::Unicode,
         }
     }
@@ -100,6 +93,9 @@ impl Renderer {
         match self.renderer_type {
             #[cfg(feature = "ansi-renderer")]
             RendererType::Ansi => ansi::render(self, image),
+
+            #[cfg(feature = "ansi256-renderer")]
+            RendererType::Ansi256 => ansi256::render(self, image),
 
             #[cfg(feature = "unicode-renderer")]
             RendererType::Unicode => unicode::render(self, image),
