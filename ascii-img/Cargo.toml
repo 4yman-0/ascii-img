@@ -1,6 +1,6 @@
 [package]
 name = "ascii-img"
-version = "0.2.0"
+version = "0.2.1"
 edition = "2024"
 description = "Convert images to ASCII"
 license = "MPL-2.0"
@@ -11,7 +11,11 @@ repository = "https://github.com/4yman-0/ascii-img"
 readme = "../README.md"
 
 [features]
-default = ["ansi-renderer", "ansi256-renderer", "unicode-renderer"]
+default = [
+	"ansi-renderer",
+	"ansi256-renderer",
+	"unicode-renderer",
+]
 ansi-renderer = ["dep:ansi_term"]
 ansi256-renderer = ["dep:ansi_term", "dep:ansi_colours"]
 unicode-renderer = []

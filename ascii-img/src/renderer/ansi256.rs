@@ -4,26 +4,11 @@ use super::{Renderer, common::*};
 use alloc::string::{String, ToString};
 use ansi_term::Colour;
 use ansi_colours::ColourExt;
-use core::cmp::max;
-use image::{DynamicImage, Pixel, Rgb};
-
-fn normalize_luminance(pixel: &Rgb<u8>) -> Rgb<u8> {
-    let (r, g, b) = (pixel[0], pixel[1], pixel[2]);
-    let max_channel = max(max(r, g), b);
-    if max_channel == 0 {
-        return Rgb([0, 0, 0]);
-    }
-    let coeff = u8::MAX as f32 / max_channel as f32;
-    Rgb([
-        (r as f32 * coeff) as u8,
-        (g as f32 * coeff) as u8,
-        (b as f32 * coeff) as u8,
-    ])
-}
+use image::{DynamicImage, Rgb};
 
 /// Renders the image as ANSI art in 256 colors
 pub fn render(options: &Renderer, image: &DynamicImage) -> String {
-    let image = process_options(options, image).to_rgb8();
+    let image = process_options(options, image).into_rgb8();
 
     let mut string = string_from_size(image.width(), image.height());
     let characters = options.characters.get();
@@ -33,7 +18,7 @@ pub fn render(options: &Renderer, image: &DynamicImage) -> String {
     for line in image.rows() {
         for pixel in line {
             if last_pixel != Some(*pixel) {
-                let normalized_pixel = normalize_luminance(pixel);
+                let normalized_pixel = saturate(pixel);
                 string.push_str(
                     &Colour::approx_rgb(
                         normalized_pixel[0],
@@ -44,7 +29,7 @@ pub fn render(options: &Renderer, image: &DynamicImage) -> String {
                     .to_string(),
                 )
             }
-            let luminance = (*pixel).to_luma()[0];
+            let luminance = linear_luma_from_rgb(pixel);
             let character = characters[(luminance as f32 / coeff).round() as usize];
             string.push(character);
 
@@ -53,23 +38,4 @@ pub fn render(options: &Renderer, image: &DynamicImage) -> String {
         string.push('\n');
     }
     string
-}
-
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn normalize_luminance_test() {
-        let pixel = normalize_luminance(&Rgb([255, 255, 255]));
-        assert_eq!((pixel[0], pixel[1], pixel[2]), (255, 255, 255));
-
-        let pixel = normalize_luminance(&Rgb([255, 0, 0]));
-        assert_eq!((pixel[0], pixel[1], pixel[2]), (255, 0, 0));
-
-        let pixel = normalize_luminance(&Rgb([100, 100, 100]));
-        assert_eq!(pixel[0], 255);
-        assert_eq!(pixel[1], 255);
-        assert_eq!(pixel[2], 255);
-    }
 }

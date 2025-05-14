@@ -3,11 +3,17 @@
 
 use crate::Renderer;
 use alloc::string::String;
-use image::DynamicImage;
+use image::{DynamicImage, Rgb};
 
 /// Font aspect ratio
 /// Asume aspect ration for monospace fonts since fonts are rarely square
 const FONT_ASPECT_RATIO: f32 = 1. / 2.;
+
+// Return the luminance of an RGB pixel using a simple, linear algorithm
+pub fn linear_luma_from_rgb(pixel: &Rgb<u8>) -> u8 {
+	let sum: u16 = pixel[0] as u16 + pixel[1] as u16 +pixel[2] as u16;
+	(sum/3).try_into().unwrap()
+}
 
 /// Resizes an image with the `renderer`'s `width` and `height`
 fn resize(options: &Renderer, image: &DynamicImage) -> DynamicImage {
@@ -36,6 +42,23 @@ pub fn process_options(options: &Renderer, image: &DynamicImage) -> DynamicImage
     image
 }
 
+/// Returns a satuated copy of the provided pixel
+pub fn saturate(pixel: &Rgb<u8>) -> Rgb<u8> {
+	use core::cmp::max;
+
+    let (r, g, b) = (pixel[0], pixel[1], pixel[2]);
+    let max_channel = max(max(r, g), b);
+    if max_channel == 0 {
+        return Rgb([0, 0, 0]);
+    }
+    let coeff = u8::MAX as f32 / max_channel as f32;
+    Rgb([
+        (r as f32 * coeff) as u8,
+        (g as f32 * coeff) as u8,
+        (b as f32 * coeff) as u8,
+    ])
+}
+
 /// Creates an empty string to store results for renderers
 pub fn string_from_size(width: u32, height: u32) -> String {
     String::with_capacity((width * height) as usize)
@@ -44,6 +67,16 @@ pub fn string_from_size(width: u32, height: u32) -> String {
 #[cfg(test)]
 mod test {
     use super::*;
+
+	#[test]
+    fn linear_luma_from_rgb_test() {
+    	let luma = linear_luma_from_rgb(&Rgb([0, 0, 0]));
+    	assert_eq!(luma, 0);
+
+    	
+    	let luma = linear_luma_from_rgb(&Rgb([255, 255, 255]));
+    	assert_eq!(luma, 255);
+    }
 
     #[test]
     fn resize_test() {
@@ -62,6 +95,18 @@ mod test {
     fn process_options_test() {
         let image = DynamicImage::new_luma8(100, 100);
         process_options(&Renderer::default(), &image);
+    }
+
+    #[test]
+    fn saturate_test() {
+        let pixel = saturate(&Rgb([255, 255, 255]));
+        assert_eq!((pixel[0], pixel[1], pixel[2]), (255, 255, 255));
+
+        let pixel = saturate(&Rgb([255, 0, 0]));
+        assert_eq!((pixel[0], pixel[1], pixel[2]), (255, 0, 0));
+
+        let pixel = saturate(&Rgb([100, 100, 100]));
+        assert_eq!((pixel[0], pixel[1], pixel[2]), (255, 255, 255));
     }
 
     #[test]
