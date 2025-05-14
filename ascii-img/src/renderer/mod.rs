@@ -1,5 +1,5 @@
 //! Renderer modoule
-//! Defines the `Renderer` enum for listing renderers and the `Renderer` struct for storing geneic renderer data
+//! Defines the `RendererType` enum for listing renderers and the `Renderer` struct for storing generic renderer data
 //! # Example
 //! ```
 //! use image::DynamicImage;
@@ -37,15 +37,30 @@ impl Default for RendererCharacters {
 
 #[allow(dead_code)]
 impl RendererCharacters {
+	/// Return the built-in characters in the form of a zero-sized enum variant
+	/// ```
+	/// use ascii_img::RendererCharacters;
+	/// let renderer_chars = RendererCharacters::builtin();
+	/// ```
     pub fn builtin() -> Self {
         Self::Builtin
     }
 
+	/// Returns a new `Vec<char>` from the string
+	/// ```
+	/// use ascii_img::RendererCharacters;
+	/// let renderer_chars = RendererCharacters::from_string(" .-#");
+	/// ```
     pub fn from_string(string: &str) -> Self {
         Self::String(string.chars().collect())
     }
 
     /// Creates a new `Vec<char>` from contained data.
+    /// ```
+    /// use ascii_img::RendererCharacters;
+    /// let renderer_chars = RendererCharacters::builtin();
+    /// println!("{:?}", renderer_chars.get());
+    /// ```
     pub fn get(&self) -> Vec<char> {
         match self {
             Self::Builtin => Vec::from(DEFAULT_CHARS),

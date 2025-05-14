@@ -1,6 +1,6 @@
 [package]
 name = "ascii-img-cli"
-version = "0.1.2"
+version = "0.1.3"
 edition = "2024"
 description = "Command-line tool for using ascii-img"
 license = "MPL-2.0"
@@ -28,6 +28,6 @@ tiff = ["image/tiff"]
 webp = ["image/webp"]
 
 [dependencies]
-ascii-img = { version = "0.2", path = "../ascii-img", features = ["parallel"] }
+ascii-img = { version = "0.2.2", path = "../ascii-img", features = ["rayon"] }
 clap = { version = "4.5.31", features = ["derive"] }
 image = { version = "0.25.5", default-features = false }

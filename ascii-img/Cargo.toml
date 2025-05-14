@@ -1,6 +1,6 @@
 [package]
 name = "ascii-img"
-version = "0.2.1"
+version = "0.2.2"
 edition = "2024"
 description = "Convert images to ASCII"
 license = "MPL-2.0"
@@ -19,8 +19,8 @@ default = [
 ansi-renderer = ["dep:ansi_term"]
 ansi256-renderer = ["dep:ansi_term", "dep:ansi_colours"]
 unicode-renderer = []
-parallel = ["image/rayon"]
 ansi_colours = ["dep:ansi_colours"]
+rayon = ["image/rayon"]
 
 [dependencies]
 ansi_colours = { version = "1.2.3", optional = true, features = ["ansi_term"] }

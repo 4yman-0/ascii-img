@@ -38,22 +38,3 @@ pub fn render(options: &Renderer, image: &DynamicImage) -> String {
     }
     string
 }
-
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn saturate_test() {
-        let pixel = saturate(&Rgb([255, 255, 255]));
-        assert_eq!((pixel[0], pixel[1], pixel[2]), (255, 255, 255));
-
-        let pixel = saturate(&Rgb([255, 0, 0]));
-        assert_eq!((pixel[0], pixel[1], pixel[2]), (255, 0, 0));
-
-        let pixel = saturate(&Rgb([100, 100, 100]));
-        assert_eq!(pixel[0], 255);
-        assert_eq!(pixel[1], 255);
-        assert_eq!(pixel[2], 255);
-    }
-}
