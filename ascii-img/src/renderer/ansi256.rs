@@ -2,8 +2,8 @@
 #[allow(dead_code)]
 use super::{Renderer, common::*};
 use alloc::string::{String, ToString};
-use ansi_term::Colour;
 use ansi_colours::ColourExt;
+use ansi_term::Colour;
 use image::{DynamicImage, Rgb};
 
 /// Renders the image as ANSI art in 256 colors

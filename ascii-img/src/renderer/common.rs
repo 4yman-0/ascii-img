@@ -11,8 +11,8 @@ const FONT_ASPECT_RATIO: f32 = 1. / 2.;
 
 /// Return the luminance of an RGB pixel using a simple, linear algorithm
 pub fn linear_luma_from_rgb(pixel: &Rgb<u8>) -> u8 {
-	let sum: u16 = pixel[0] as u16 + pixel[1] as u16 +pixel[2] as u16;
-	(sum/3).try_into().unwrap()
+    let sum: u16 = pixel[0] as u16 + pixel[1] as u16 + pixel[2] as u16;
+    (sum / 3).try_into().unwrap()
 }
 
 /// Resizes an image with the `renderer`'s `width` and `height`
@@ -44,7 +44,7 @@ pub fn process_options(options: &Renderer, image: &DynamicImage) -> DynamicImage
 
 /// Returns a satuated copy of the provided pixel
 pub fn saturate(pixel: &Rgb<u8>) -> Rgb<u8> {
-	use core::cmp::max;
+    use core::cmp::max;
 
     let (r, g, b) = (pixel[0], pixel[1], pixel[2]);
     let max_channel = max(max(r, g), b);
@@ -68,14 +68,13 @@ pub fn string_from_size(width: u32, height: u32) -> String {
 mod test {
     use super::*;
 
-	#[test]
+    #[test]
     fn linear_luma_from_rgb_test() {
-    	let luma = linear_luma_from_rgb(&Rgb([0, 0, 0]));
-    	assert_eq!(luma, 0);
+        let luma = linear_luma_from_rgb(&Rgb([0, 0, 0]));
+        assert_eq!(luma, 0);
 
-    	
-    	let luma = linear_luma_from_rgb(&Rgb([255, 255, 255]));
-    	assert_eq!(luma, 255);
+        let luma = linear_luma_from_rgb(&Rgb([255, 255, 255]));
+        assert_eq!(luma, 255);
     }
 
     #[test]

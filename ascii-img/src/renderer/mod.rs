@@ -30,27 +30,27 @@ pub enum RendererCharacters {
 }
 
 impl Default for RendererCharacters {
-	fn default() -> Self {
-		Self::Builtin
-	}
+    fn default() -> Self {
+        Self::Builtin
+    }
 }
 
 #[allow(dead_code)]
 impl RendererCharacters {
-	/// Return the built-in characters in the form of a zero-sized enum variant
-	/// ```
-	/// use ascii_img::RendererCharacters;
-	/// let renderer_chars = RendererCharacters::builtin();
-	/// ```
+    /// Return the built-in characters in the form of a zero-sized enum variant
+    /// ```
+    /// use ascii_img::RendererCharacters;
+    /// let renderer_chars = RendererCharacters::builtin();
+    /// ```
     pub fn builtin() -> Self {
         Self::Builtin
     }
 
-	/// Returns a new `Vec<char>` from the string
-	/// ```
-	/// use ascii_img::RendererCharacters;
-	/// let renderer_chars = RendererCharacters::from_string(" .-#");
-	/// ```
+    /// Returns a new `Vec<char>` from the string
+    /// ```
+    /// use ascii_img::RendererCharacters;
+    /// let renderer_chars = RendererCharacters::from_string(" .-#");
+    /// ```
     pub fn from_string(string: &str) -> Self {
         Self::String(string.chars().collect())
     }
@@ -74,8 +74,8 @@ pub enum RendererType {
     #[cfg(feature = "ansi-renderer")]
     Ansi,
 
-	#[cfg(feature = "ansi256-renderer")]
-	Ansi256,
+    #[cfg(feature = "ansi256-renderer")]
+    Ansi256,
 
     #[cfg(feature = "unicode-renderer")]
     Unicode,
