@@ -1,8 +1,7 @@
 //! Renderer common behavior module
 //! Contains function for use in other renderers
 
-use crate::Renderer;
-use alloc::string::String;
+use super::RendererConfig;
 use image::{DynamicImage, Rgb};
 
 /// Font aspect ratio
@@ -16,8 +15,8 @@ pub fn linear_luma_from_rgb(pixel: &Rgb<u8>) -> u8 {
 }
 
 /// Resizes an image with the `renderer`'s `width` and `height`
-fn resize(options: &Renderer, image: &DynamicImage) -> DynamicImage {
-    match (options.width, options.height) {
+pub fn resize(image: &DynamicImage, config: &RendererConfig) -> DynamicImage {
+    match (config.width, config.height) {
         (Some(width), Some(height)) => image.thumbnail_exact(width, height),
         (Some(width), None) => {
             image.thumbnail_exact(width, (width as f32 * FONT_ASPECT_RATIO) as u32)
@@ -30,16 +29,6 @@ fn resize(options: &Renderer, image: &DynamicImage) -> DynamicImage {
             (image.height() as f32 * FONT_ASPECT_RATIO) as u32,
         ),
     }
-}
-
-/// Apply common transformation to an image usinng the renderer options
-pub fn process_options(options: &Renderer, image: &DynamicImage) -> DynamicImage {
-    let mut image = resize(options, image);
-    if options.invert {
-        image.invert();
-    };
-
-    image
 }
 
 /// Returns a satuated copy of the provided pixel
@@ -57,11 +46,6 @@ pub fn saturate(pixel: &Rgb<u8>) -> Rgb<u8> {
         (g as f32 * coeff) as u8,
         (b as f32 * coeff) as u8,
     ])
-}
-
-/// Creates an empty string to store results for renderers
-pub fn string_from_size(width: u32, height: u32) -> String {
-    String::with_capacity((width * height) as usize)
 }
 
 #[cfg(test)]
@@ -82,18 +66,12 @@ mod test {
         let image = DynamicImage::new_luma8(100, 100);
 
         let resized_image = resize(
-            &Renderer::default().width(Some(150)).height(Some(150)),
             &image,
+			&RendererConfig::default().width(Some(150)).height(Some(150)),
         );
 
         assert_eq!(resized_image.width(), 150);
         assert_eq!(resized_image.height(), 150);
-    }
-
-    #[test]
-    fn process_options_test() {
-        let image = DynamicImage::new_luma8(100, 100);
-        process_options(&Renderer::default(), &image);
     }
 
     #[test]
@@ -106,11 +84,5 @@ mod test {
 
         let pixel = saturate(&Rgb([100, 100, 100]));
         assert_eq!((pixel[0], pixel[1], pixel[2]), (255, 255, 255));
-    }
-
-    #[test]
-    fn string_from_size_test() {
-        let string = string_from_size(20, 20);
-        assert_eq!(string.capacity(), 400);
     }
 }
