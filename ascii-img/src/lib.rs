@@ -3,4 +3,4 @@
 extern crate alloc;
 
 pub mod renderer;
-pub use renderer::{Renderer, RendererCharacters, RendererType};
+pub use renderer::{RendererConfig, Renderer, RendererCharacters, RendererType};

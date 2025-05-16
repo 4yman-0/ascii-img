@@ -1,6 +1,6 @@
 mod cli;
 
-use ascii_img::{Renderer, RendererCharacters};
+use ascii_img::{RendererConfig, RendererCharacters};
 use clap::Parser;
 use cli::Cli;
 use image::ImageError;
@@ -24,7 +24,7 @@ fn render(cli: Cli) -> Result<String, ImageError> {
             RendererCharacters::default()
         }
     };
-    let renderer = Renderer::default()
+    let renderer = RendererConfig::default()
         .width(cli.width)
         .height(cli.height)
         .invert(cli.invert.unwrap_or(false))
