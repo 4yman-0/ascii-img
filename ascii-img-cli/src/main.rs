@@ -1,6 +1,6 @@
 mod cli;
 
-use ascii_img::{Renderer, RendererCharacters};
+use ascii_img::{RendererConfig, RendererCharacters};
 use clap::Parser;
 use cli::Cli;
 use image::ImageError;

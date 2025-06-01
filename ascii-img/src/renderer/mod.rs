@@ -2,9 +2,9 @@
 //! # Example
 //! ```
 //! use image::DynamicImage;
-//! use ascii_img::Renderer;
+//! use ascii_img::RendererConfig;
 //! let image = DynamicImage::new_luma8(100, 100);
-//! Renderer::default().render(&image);
+//! RendererConfig::default().render(&image);
 //! ```
 
 #[cfg(feature = "ansi-renderer")]
@@ -18,10 +18,57 @@ mod unicode;
 
 mod common;
 use alloc::{string::String, vec::Vec};
-use image::DynamicImage;
+use image::{DynamicImage, Rgb};
 
 const DEFAULT_CHARS: &[char] = &[' ', '.', '-', ':', '=', '*', '+', '#', '%', '@'];
 // TODO: better characters for ANSI and Unicode
+
+pub trait Renderer {
+    /// Render a single pixel as a colored character
+    fn render_pixel(&self, pixel: &Rgb<u8>, characters: &[char], coeff: f32) -> (String, char);
+    
+    /// Process the image before rendering
+    fn preprocess_image(&self, image: &DynamicImage, config: &RendererConfig) -> DynamicImage {
+    	let mut image = common::resize(image, config);
+    	if config.invert {
+    	    image.invert();
+    	};
+
+    	image
+    }
+
+    /// Render the image to ASCII art
+    fn render(&self, image: &DynamicImage, config: &RendererConfig) -> String {
+        let image = self.preprocess_image(image, config).to_rgb8();
+        
+        let mut string = self.create_output_buffer(image.width(), image.height());
+        let char_array = config.characters.get();
+        let coeff = u8::MAX as f32 / (char_array.len() - 1) as f32;
+        let mut last_pixel: Option<Rgb<u8>> = None;
+
+        for line in image.rows() {
+            for pixel in line {
+                if last_pixel != Some(*pixel) {
+                    let (color_code, character) = self.render_pixel(pixel, &char_array, coeff);
+                    string.push_str(&color_code);
+                    string.push(character);
+                    last_pixel = Some(*pixel);
+                } else {
+                    let (_, character) = self.render_pixel(pixel, &char_array, coeff);
+                    string.push(character);
+                }
+            }
+            string.push('\n');
+        }
+        
+        string
+    }
+
+    /// Create an empty string buffer with the appropriate capacity
+    fn create_output_buffer(&self, width: u32, height: u32) -> String {
+        String::with_capacity((width * height * 2) as usize)
+    }
+}
 
 /// Abstacts an array of characters, for use in [`Renderer`](struct.Renderer.html)
 pub enum RendererCharacters {
@@ -88,7 +135,7 @@ pub enum RendererType {
 }
 
 /// Stores generic renderer data
-pub struct Renderer {
+pub struct RendererConfig {
     width: Option<u32>,
     height: Option<u32>,
     invert: bool,
@@ -96,7 +143,7 @@ pub struct Renderer {
     renderer_type: RendererType,
 }
 
-impl Default for Renderer {
+impl Default for RendererConfig {
     fn default() -> Self {
         Self {
             width: None,
@@ -109,18 +156,18 @@ impl Default for Renderer {
 }
 
 #[allow(dead_code)]
-impl Renderer {
+impl RendererConfig {
     /// Renders an image into a string
     pub fn render(&self, image: &DynamicImage) -> String {
         match self.renderer_type {
             #[cfg(feature = "ansi-renderer")]
-            RendererType::Ansi => ansi::render(self, image),
+            RendererType::Ansi => ansi::AnsiRenderer.render(image, self),
 
             #[cfg(feature = "ansi256-renderer")]
-            RendererType::Ansi256 => ansi256::render(self, image),
+            RendererType::Ansi256 => ansi256::Ansi256Renderer.render(image, self),
 
             #[cfg(feature = "unicode-renderer")]
-            RendererType::Unicode => unicode::render(self, image),
+            RendererType::Unicode => unicode::UnicodeRenderer.render(image, self),
         }
     }
 
@@ -176,7 +223,7 @@ mod test {
 
     #[test]
     fn renderer_build_test() {
-        let _renderer = Renderer::default()
+        let _renderer = RendererConfig::default()
             .set_width(100_u32)
             .set_height(100_u32)
             .set_invert(true)
