@@ -1,7 +1,10 @@
 //! Renderer common behavior module
 //! Contains function for use in other renderers
 
-use super::RendererConfig;
+use core::{
+	convert::TryInto,
+	num::TryFromIntError,
+};
 use image::{DynamicImage, Rgb};
 
 /// Font aspect ratio
@@ -9,14 +12,14 @@ use image::{DynamicImage, Rgb};
 const FONT_ASPECT_RATIO: f32 = 1. / 2.;
 
 /// Return the luminance of an RGB pixel using a simple, linear algorithm
-pub fn linear_luma_from_rgb(pixel: &Rgb<u8>) -> u8 {
+pub fn linear_luma_from_rgb(pixel: &Rgb<u8>) -> Result<u8, TryFromIntError> {
     let sum: u16 = pixel[0] as u16 + pixel[1] as u16 + pixel[2] as u16;
-    (sum / 3).try_into().unwrap()
+    (sum / 3).try_into()
 }
 
-/// Resizes an image with the `renderer`'s `width` and `height`
-pub fn resize(image: &DynamicImage, config: &RendererConfig) -> DynamicImage {
-    match (config.width, config.height) {
+/// Resizes an image with optional `width` and `height`
+pub fn resize(dimensions: &(Option<u32>, Option<u32>), image: &DynamicImage) -> DynamicImage {
+    match *dimensions {
         (Some(width), Some(height)) => image.thumbnail_exact(width, height),
         (Some(width), None) => {
             image.thumbnail_exact(width, (width as f32 * FONT_ASPECT_RATIO) as u32)
@@ -53,22 +56,20 @@ mod test {
     use super::*;
 
     #[test]
-    fn linear_luma_from_rgb_test() {
-        let luma = linear_luma_from_rgb(&Rgb([0, 0, 0]));
+    fn linear_luma_from_rgb_test() -> Result<(), core::num::TryFromIntError> {
+        let luma = linear_luma_from_rgb(&Rgb([0, 0, 0]))?;
         assert_eq!(luma, 0);
 
-        let luma = linear_luma_from_rgb(&Rgb([255, 255, 255]));
+        let luma = linear_luma_from_rgb(&Rgb([255, 255, 255]))?;
         assert_eq!(luma, 255);
+
+        Ok(())
     }
 
     #[test]
     fn resize_test() {
         let image = DynamicImage::new_luma8(100, 100);
-
-        let resized_image = resize(
-            &image,
-			&RendererConfig::default().width(Some(150)).height(Some(150)),
-        );
+        let resized_image = resize(&(Some(150_u32), Some(150_u32)), &image);
 
         assert_eq!(resized_image.width(), 150);
         assert_eq!(resized_image.height(), 150);

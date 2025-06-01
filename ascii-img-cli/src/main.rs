@@ -18,18 +18,19 @@ fn render(cli: Cli) -> Result<String, ImageError> {
             if characters == "builtin" {
                 RendererCharacters::builtin()
             } else {
-                RendererCharacters::from_string(characters.as_str())
+                RendererCharacters::custom_from(characters.as_str())
             }
         } else {
             RendererCharacters::default()
         }
     };
-    let renderer = RendererConfig::default()
-        .width(cli.width)
-        .height(cli.height)
-        .invert(cli.invert.unwrap_or(false))
-        .characters(characters)
-        .renderer_type(cli.renderer_type.unwrap_or_default().into());
+    let result = RendererConfig::default()
+        .set_width(cli.width)
+        .set_height(cli.height)
+        .set_invert(cli.invert.unwrap_or(false))
+        .set_characters(characters)
+        .set_renderer_type(cli.renderer_type.unwrap_or_default().into())
+        .render(&image);
 
-    Ok(renderer.render(&image))
+    Ok(result)
 }

@@ -1,5 +1,6 @@
 //! ASCII renderer module
-use super::{Renderer, common::*};
+#[allow(dead_code)]
+use super::{common::*, Renderer};
 use alloc::string::{String, ToString};
 use ansi_term::Colour;
 use image::Rgb;
@@ -17,7 +18,7 @@ impl Renderer for AnsiRenderer {
             normalized_pixel[2],
         ).prefix().to_string();
         
-        let luminance = linear_luma_from_rgb(pixel);
+        let luminance = linear_luma_from_rgb(pixel).unwrap();
         let character = characters[(luminance as f32 / coeff).round() as usize];
         
         (color_code, character)
