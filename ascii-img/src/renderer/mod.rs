@@ -1,5 +1,4 @@
 //! Renderer modoule
-//! Defines the `RendererType` enum for listing renderers and the `Renderer` struct for storing generic renderer data
 //! # Example
 //! ```
 //! use image::DynamicImage;
@@ -24,9 +23,12 @@ use image::DynamicImage;
 const DEFAULT_CHARS: &[char] = &[' ', '.', '-', ':', '=', '*', '+', '#', '%', '@'];
 // TODO: better characters for ANSI and Unicode
 
+/// Abstacts an array of characters, for use in [`Renderer`](struct.Renderer.html)
 pub enum RendererCharacters {
+    /// The built-in array of characters
     Builtin,
-    String(Vec<char>),
+    /// A custom array of characters
+    Custom(Vec<char>),
 }
 
 impl Default for RendererCharacters {
@@ -37,7 +39,7 @@ impl Default for RendererCharacters {
 
 #[allow(dead_code)]
 impl RendererCharacters {
-    /// Return the built-in characters in the form of a zero-sized enum variant
+    /// Return the built-in character array in the form of an empty enum variant
     /// ```
     /// use ascii_img::RendererCharacters;
     /// let renderer_chars = RendererCharacters::builtin();
@@ -46,16 +48,16 @@ impl RendererCharacters {
         Self::Builtin
     }
 
-    /// Returns a new `Vec<char>` from the string
+    /// Returns an instance of `RendererCharacters` from a string-like reference
     /// ```
     /// use ascii_img::RendererCharacters;
-    /// let renderer_chars = RendererCharacters::from_string(" .-#");
+    /// let renderer_chars = RendererCharacters::custom_from(" .-#");
     /// ```
-    pub fn from_string(string: &str) -> Self {
-        Self::String(string.chars().collect())
+    pub fn custom_from<T: AsRef<str>>(string: T) -> Self {
+        Self::Custom(string.as_ref().chars().collect())
     }
 
-    /// Creates a new `Vec<char>` from contained data.
+    /// Returns a `Vec<char>` from contained data.
     /// ```
     /// use ascii_img::RendererCharacters;
     /// let renderer_chars = RendererCharacters::builtin();
@@ -64,23 +66,28 @@ impl RendererCharacters {
     pub fn get(&self) -> Vec<char> {
         match self {
             Self::Builtin => Vec::from(DEFAULT_CHARS),
-            Self::String(characters) => characters.clone(),
+            Self::Custom(characters) => characters.clone(),
         }
     }
 }
 
 #[derive(Clone)]
+/// An enum of supported renderer types
 pub enum RendererType {
     #[cfg(feature = "ansi-renderer")]
+    /// The ANSI renderer
     Ansi,
 
     #[cfg(feature = "ansi256-renderer")]
+    /// The ANSI 256 colors renderer
     Ansi256,
 
     #[cfg(feature = "unicode-renderer")]
+    /// The Unicode renderer
     Unicode,
 }
 
+/// Stores generic renderer data
 pub struct Renderer {
     width: Option<u32>,
     height: Option<u32>,
@@ -117,27 +124,47 @@ impl Renderer {
         }
     }
 
-    pub fn width(mut self, width: Option<u32>) -> Self {
-        self.width = width;
+    pub fn width(&self) -> Option<u32> {
+        self.width
+    }
+
+    pub fn height(&self) -> Option<u32> {
+        self.height
+    }
+
+    pub fn invert(&self) -> bool {
+        self.invert
+    }
+
+    pub fn characters(&self) -> &RendererCharacters {
+        &self.characters
+    }
+
+    pub fn renderer_type(&self) -> &RendererType {
+        &self.renderer_type
+    }
+
+    pub fn set_width<T: Into<Option<u32>>>(&mut self, width: T) -> &mut Self {
+        self.width = width.into();
         self
     }
 
-    pub fn height(mut self, height: Option<u32>) -> Self {
-        self.height = height;
+    pub fn set_height<T: Into<Option<u32>>>(&mut self, height: T) -> &mut Self {
+        self.height = height.into();
         self
     }
 
-    pub fn invert(mut self, invert: bool) -> Self {
+    pub fn set_invert(&mut self, invert: bool) -> &mut Self {
         self.invert = invert;
         self
     }
 
-    pub fn characters(mut self, characters: RendererCharacters) -> Self {
+    pub fn set_characters(&mut self, characters: RendererCharacters) -> &mut Self {
         self.characters = characters;
         self
     }
 
-    pub fn renderer_type(mut self, renderer_type: RendererType) -> Self {
+    pub fn set_renderer_type(&mut self, renderer_type: RendererType) -> &mut Self {
         self.renderer_type = renderer_type;
         self
     }
@@ -150,10 +177,10 @@ mod test {
     #[test]
     fn renderer_build_test() {
         let _renderer = Renderer::default()
-            .width(Some(100))
-            .height(Some(100))
-            .invert(true)
-            .characters(RendererCharacters::default())
-            .renderer_type(RendererType::Unicode);
+            .set_width(100_u32)
+            .set_height(100_u32)
+            .set_invert(true)
+            .set_characters(RendererCharacters::default())
+            .set_renderer_type(RendererType::Unicode);
     }
 }
