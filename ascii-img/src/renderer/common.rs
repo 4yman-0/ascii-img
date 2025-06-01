@@ -1,7 +1,10 @@
 //! Renderer common behavior module
 //! Contains function for use in other renderers
 
-use super::RendererConfig;
+use core::{
+	convert::TryInto,
+	num::TryFromIntError,
+};
 use image::{DynamicImage, Rgb};
 
 /// Font aspect ratio
@@ -15,7 +18,7 @@ pub fn linear_luma_from_rgb(pixel: &Rgb<u8>) -> Result<u8, TryFromIntError> {
 }
 
 /// Resizes an image with optional `width` and `height`
-fn resize(dimensions: &(Option<u32>, Option<u32>), image: &DynamicImage) -> DynamicImage {
+pub fn resize(dimensions: &(Option<u32>, Option<u32>), image: &DynamicImage) -> DynamicImage {
     match *dimensions {
         (Some(width), Some(height)) => image.thumbnail_exact(width, height),
         (Some(width), None) => {

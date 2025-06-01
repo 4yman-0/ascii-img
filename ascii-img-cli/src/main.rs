@@ -24,7 +24,7 @@ fn render(cli: Cli) -> Result<String, ImageError> {
             RendererCharacters::default()
         }
     };
-    let result = Renderer::default()
+    let result = RendererConfig::default()
         .set_width(cli.width)
         .set_height(cli.height)
         .set_invert(cli.invert.unwrap_or(false))

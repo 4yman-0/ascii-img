@@ -29,7 +29,7 @@ pub trait Renderer {
     
     /// Process the image before rendering
     fn preprocess_image(&self, image: &DynamicImage, config: &RendererConfig) -> DynamicImage {
-    	let mut image = common::resize(image, config);
+    	let mut image = common::resize(&(config.width(), config.height()), image);
     	if config.invert {
     	    image.invert();
     	};

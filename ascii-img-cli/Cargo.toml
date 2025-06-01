@@ -28,6 +28,6 @@ tiff = ["image/tiff"]
 webp = ["image/webp"]
 
 [dependencies]
-ascii-img = { version = "0.3.0", path = "../ascii-img", features = ["rayon"] }
+ascii-img = { version = "0.4.0", path = "../ascii-img", features = ["rayon"] }
 clap = { version = "4.5.31", features = ["derive"] }
 image = { version = "0.25.5", default-features = false }
