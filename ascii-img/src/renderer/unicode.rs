@@ -5,8 +5,9 @@ use image::{DynamicImage, Rgb};
 
 pub struct UnicodeRenderer;
 
+#[allow(dead_code)]
 impl Renderer for UnicodeRenderer {
-	#[allow(dead_code)]
+	#[inline]
     fn render_pixel(&self, pixel: &Rgb<u8>, characters: &[char], coeff: f32) -> (String, char) {
         let luminance = linear_luma_from_rgb(pixel).unwrap();
         let character = characters[(luminance as f32 / coeff).round() as usize];

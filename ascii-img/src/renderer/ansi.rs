@@ -1,5 +1,4 @@
 //! ASCII renderer module
-#[allow(dead_code)]
 use super::{common::*, Renderer};
 use alloc::string::{String, ToString};
 use ansi_term::Colour;

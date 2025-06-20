@@ -119,6 +119,7 @@ impl RendererCharacters {
 }
 
 #[derive(Clone)]
+#[non_exhaustive]
 /// An enum of supported renderer types
 pub enum RendererType {
     #[cfg(feature = "ansi-renderer")]
