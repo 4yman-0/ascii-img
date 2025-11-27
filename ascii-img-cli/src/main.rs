@@ -8,7 +8,7 @@ use image::ImageError;
 fn main() {
     let cli = Cli::parse();
     let art = render(cli).expect("Error while rendering");
-    print!("{}", art);
+    print!("{art}");
 }
 
 fn render(cli: Cli) -> Result<String, ImageError> {
