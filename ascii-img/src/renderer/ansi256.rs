@@ -11,7 +11,7 @@ pub struct Ansi256Renderer;
 impl Renderer for Ansi256Renderer {
 	#[allow(dead_code)]
     fn render_pixel(&self, pixel: &Rgb<u8>, characters: &[char], coeff: f32) -> (String, char) {
-        let luminance = linear_luma_from_rgb(pixel).unwrap();
+        let luminance = linear_luma_from_rgb(pixel);
         let character = characters[(luminance as f32 / coeff).round() as usize];
 
         let normalized_pixel = saturate(pixel);
@@ -20,8 +20,7 @@ impl Renderer for Ansi256Renderer {
             normalized_pixel[1],
             normalized_pixel[2],
         ).prefix().to_string();
-
-
+        
         (color_code, character)
     }
 }

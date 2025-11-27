@@ -53,14 +53,12 @@ mod test {
     use super::*;
 
     #[test]
-    fn linear_luma_from_rgb_test() -> Result<(), core::num::TryFromIntError> {
-        let luma = linear_luma_from_rgb(&Rgb([0, 0, 0]))?;
+    fn linear_luma_from_rgb_test() {
+        let luma = linear_luma_from_rgb(&Rgb([0, 0, 0]));
         assert_eq!(luma, 0);
 
-        let luma = linear_luma_from_rgb(&Rgb([255, 255, 255]))?;
+        let luma = linear_luma_from_rgb(&Rgb([255, 255, 255]));
         assert_eq!(luma, 255);
-
-        Ok(())
     }
 
     #[test]
