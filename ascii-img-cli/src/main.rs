@@ -24,13 +24,11 @@ fn render(cli: Cli) -> Result<String, ImageError> {
             RendererCharacters::default()
         }
     };
-    let result = RendererConfig::default()
-        .set_width(cli.width)
-        .set_height(cli.height)
-        .set_invert(cli.invert.unwrap_or(false))
-        .set_characters(characters)
-        .set_renderer_type(cli.renderer_type.unwrap_or_default().into())
-        .render(&image);
-
+    let result = RendererConfig::new(
+		(cli.width, cli.height),
+		cli.invert.unwrap_or(false),
+		characters,
+		cli.renderer_type.unwrap_or_default().into(),
+    ).render(&image);
     Ok(result)
 }

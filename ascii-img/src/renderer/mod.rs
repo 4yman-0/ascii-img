@@ -158,6 +158,21 @@ impl Default for RendererConfig {
 
 #[allow(dead_code)]
 impl RendererConfig {
+	pub fn new(
+		dimensions: (Option<u32>, Option<u32>),
+		invert: bool,
+		characters: RendererCharacters,
+		renderer_type: RendererType,
+	) -> Self {
+		Self {
+			width: dimensions.0,
+			height: dimensions.1,
+			invert,
+			characters,
+			renderer_type,	
+		}
+	}
+	
     /// Renders an image into a string
     pub fn render(&self, image: &DynamicImage) -> String {
         match self.renderer_type {
@@ -190,45 +205,5 @@ impl RendererConfig {
 
     pub fn renderer_type(&self) -> &RendererType {
         &self.renderer_type
-    }
-
-    pub fn set_width<T: Into<Option<u32>>>(&mut self, width: T) -> &mut Self {
-        self.width = width.into();
-        self
-    }
-
-    pub fn set_height<T: Into<Option<u32>>>(&mut self, height: T) -> &mut Self {
-        self.height = height.into();
-        self
-    }
-
-    pub fn set_invert(&mut self, invert: bool) -> &mut Self {
-        self.invert = invert;
-        self
-    }
-
-    pub fn set_characters(&mut self, characters: RendererCharacters) -> &mut Self {
-        self.characters = characters;
-        self
-    }
-
-    pub fn set_renderer_type(&mut self, renderer_type: RendererType) -> &mut Self {
-        self.renderer_type = renderer_type;
-        self
-    }
-}
-
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn renderer_build_test() {
-        let _renderer = RendererConfig::default()
-            .set_width(100_u32)
-            .set_height(100_u32)
-            .set_invert(true)
-            .set_characters(RendererCharacters::default())
-            .set_renderer_type(RendererType::Unicode);
     }
 }

@@ -17,7 +17,7 @@ impl Renderer for AnsiRenderer {
             normalized_pixel[2],
         ).prefix().to_string();
         
-        let luminance = linear_luma_from_rgb(pixel).unwrap();
+        let luminance = linear_luma_from_rgb(pixel);
         let character = characters[(luminance as f32 / coeff).round() as usize];
         
         (color_code, character)

@@ -1,10 +1,7 @@
 //! Renderer common behavior module
 //! Contains function for use in other renderers
 
-use core::{
-	convert::TryInto,
-	num::TryFromIntError,
-};
+use core::{convert::TryInto,};
 use image::{DynamicImage, Rgb};
 
 /// Font aspect ratio
@@ -12,9 +9,9 @@ use image::{DynamicImage, Rgb};
 const FONT_ASPECT_RATIO: f32 = 1. / 2.;
 
 /// Return the luminance of an RGB pixel using a simple, linear algorithm
-pub fn linear_luma_from_rgb(pixel: &Rgb<u8>) -> Result<u8, TryFromIntError> {
+pub fn linear_luma_from_rgb(pixel: &Rgb<u8>) -> u8 {
     let sum: u16 = pixel[0] as u16 + pixel[1] as u16 + pixel[2] as u16;
-    (sum / 3).try_into()
+    (sum / 3).try_into().unwrap()
 }
 
 /// Resizes an image with optional `width` and `height`

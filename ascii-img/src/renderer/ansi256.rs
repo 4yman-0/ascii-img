@@ -7,9 +7,9 @@ use image::Rgb;
 
 pub struct Ansi256Renderer;
 
-#[allow(dead_code)]
+
 impl Renderer for Ansi256Renderer {
-	#[inline]
+	#[allow(dead_code)]
     fn render_pixel(&self, pixel: &Rgb<u8>, characters: &[char], coeff: f32) -> (String, char) {
         let luminance = linear_luma_from_rgb(pixel).unwrap();
         let character = characters[(luminance as f32 / coeff).round() as usize];
@@ -20,7 +20,8 @@ impl Renderer for Ansi256Renderer {
             normalized_pixel[1],
             normalized_pixel[2],
         ).prefix().to_string();
-        
+
+
         (color_code, character)
     }
 }
